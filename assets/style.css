@@ -15,21 +15,24 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-input {
-    width: 100%;
-    padding: 10px;
-    font-size: 20px;
-    text-align: right;
+.display {
+    background-color: #eee;
+    padding: 20px;
     margin-bottom: 10px;
-    border: 1px solid #ccc;
+    text-align: right;
+    font-size: 2rem;
     border-radius: 5px;
+}
+
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
 }
 
 button {
     padding: 15px;
     font-size: 20px;
-    width: 60px;
-    margin: 5px;
     border-radius: 5px;
     border: 1px solid #ccc;
     background-color: #f0f0f0;
