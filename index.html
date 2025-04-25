@@ -1,121 +1,61 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Web Calculator</title>
-  <style>
-    body {
-      background: #f0f0f0;
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-    .calculator {
-      background: #222;
-      padding: 20px;
-      border-radius: 15px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.3);
-    }
-    .display {
-      width: 100%;
-      height: 60px;
-      background: #000;
-      color: #0f0;
-      font-size: 2rem;
-      text-align: right;
-      padding: 10px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-    }
-    .buttons {
-      display: grid;
-      grid-template-columns: repeat(4, 80px);
-      grid-gap: 10px;
-    }
-    button {
-      font-size: 1.5rem;
-      padding: 20px;
-      border: none;
-      border-radius: 10px;
-      background: #444;
-      color: #fff;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-    button:hover {
-      background: #666;
-    }
-    .operator {
-      background: #ff9500;
-    }
-    .equal {
-      background: #34c759;
-    }
-    .clear {
-      background: #ff3b30;
-    }
-  </style>
-</head>
-<body>
-  <div class="calculator">
-    <div class="display" id="display">0</div>
-    <div class="buttons">
-      <button onclick="clearDisplay()" class="clear">C</button>
-      <button onclick="append('%')">%</button>
-      <button onclick="append('/')">/</button>
-      <button onclick="append('*')" class="operator">*</button>
+import tkinter as tk
 
-      <button onclick="append('7')">7</button>
-      <button onclick="append('8')">8</button>
-      <button onclick="append('9')">9</button>
-      <button onclick="append('-')" class="operator">-</button>
+# Function to update expression in the text entry box
+def press(num):
+    global expression
+    expression += str(num)
+    equation.set(expression)
 
-      <button onclick="append('4')">4</button>
-      <button onclick="append('5')">5</button>
-      <button onclick="append('6')">6</button>
-      <button onclick="append('+')" class="operator">+</button>
+# Function to evaluate final expression
+def equalpress():
+    try:
+        global expression
+        total = str(eval(expression))  # Evaluate the expression
+        equation.set(total)
+        expression = total
+    except:
+        equation.set(" error ")  # Show error if invalid expression
+        expression = ""
 
-      <button onclick="append('1')">1</button>
-      <button onclick="append('2')">2</button>
-      <button onclick="append('3')">3</button>
-      <button onclick="calculate()" class="equal">=</button>
+# Function to clear the entry
+def clear():
+    global expression
+    expression = ""
+    equation.set("")
 
-      <button onclick="append('0')">0</button>
-      <button onclick="append('.')">.</button>
-    </div>
-  </div>
+# Main code
+if __name__ == "__main__":
+    gui = tk.Tk()
+    gui.configure(background="light grey")
+    gui.title("Simple Calculator")
+    gui.geometry("300x400")
 
-  <script>
-    let display = document.getElementById("display");
-    let currentInput = "";
+    expression = ""  # Initialize empty expression
+    equation = tk.StringVar()  # StringVar to store the expression
 
-    function append(value) {
-      if (display.innerText === "0" && value !== ".") {
-        currentInput = value;
-      } else {
-        currentInput += value;
-      }
-      display.innerText = currentInput;
-    }
+    # Entry widget to display expression
+    expression_field = tk.Entry(gui, textvariable=equation, font=("Arial", 18), bd=10, insertwidth=2, width=14, borderwidth=4)
+    expression_field.grid(columnspan=4)
 
-    function clearDisplay() {
-      currentInput = "";
-      display.innerText = "0";
-    }
+    # Buttons layout (text, row, column)
+    buttons = [
+        (7, 1, 0), (8, 1, 1), (9, 1, 2), ('/', 1, 3),
+        (4, 2, 0), (5, 2, 1), (6, 2, 2), ('*', 2, 3),
+        (1, 3, 0), (2, 3, 1), (3, 3, 2), ('-', 3, 3),
+        (0, 4, 0), ('.', 4, 1), ('+', 4, 2), ('=', 4, 3),
+        ('C', 5, 0)
+    ]
 
-    function calculate() {
-      try {
-        let result = eval(currentInput);
-        display.innerText = result;
-        currentInput = result.toString();
-      } catch {
-        display.innerText = "Error";
-        currentInput = "";
-      }
-    }
-  </script>
-</body>
-</html>
+    # Creating buttons dynamically
+    for (text, row, col) in buttons:
+        if text == '=':
+            btn = tk.Button(gui, text=text, fg="white", bg="green", command=equalpress, height=2, width=7)
+        elif text == 'C':
+            btn = tk.Button(gui, text=text, fg="white", bg="red", command=clear, height=2, width=31)
+            btn.grid(row=row, column=col, columnspan=4)  # Span across multiple columns
+            continue
+        else:
+            btn = tk.Button(gui, text=text, fg="black", bg="white", command=lambda t=text: press(t), height=2, width=7)
+        btn.grid(row=row, column=col)
+
+    gui.mainloop()
